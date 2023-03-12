@@ -12,7 +12,14 @@
       name="description"
       content="Example of a dapp with backend that connects to the wallet via ton-connect v2"
     />
-    <title>Demo Dapp with backend</title>
+    <title>Ton SBT Gate</title>
+
+    <script type="text/javascript">
+      function onTelegramAuth(user) {
+        console.log(user)
+        alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

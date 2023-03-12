@@ -8,3 +8,28 @@
     margin-bottom: 10px;
   }
 }
+
+html, body, #root, .app {
+  width: 100%;
+  height: 100%;
+}
+
+.center-of-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  height: 100%;
+  justify-content: center;
+}
+
+.social-login-btn {
+  border-radius: 100px;
+  padding: 8px 16px;
+  text-align: center;
+}
+
+.social-login-btn:hover {
+  cursor: pointer;
+  opacity: 0.9;
+}

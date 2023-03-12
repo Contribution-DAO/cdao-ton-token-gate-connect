@@ -11,4 +11,5 @@ module.exports = {
 	importOrderSortSpecifiers: true,
 	importOrderCaseInsensitive: true,
 	importOrderGroupNamespaceSpecifiers: true,
+	endOfLine: "auto",
 };

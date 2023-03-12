@@ -27,8 +27,8 @@ const menu = (
 	/>
 );
 
-export function AuthButton() {
-	const [modalUniversalLink, setModalUniversalLink] = useState('');
+export function AuthButton({ onWalletChange }: { onWalletChange?: Function }) {
+const [modalUniversalLink, setModalUniversalLink] = useState('');
 	const forceUpdate = useForceUpdate();
 	const wallet = useTonWallet();
 	const onConnectErrorCallback = useCallback(() => {
@@ -82,12 +82,18 @@ export function AuthButton() {
 		}
 	}, [walletsList, authPayload]);
 
+	useEffect(() => {
+		if (onWalletChange) {
+			onWalletChange(wallet)
+		}
+	}, [wallet])
+
 	return (
 		<>
-			<div className="auth-button">
+			<div className="auth-button" style={{ width: "100%" }}>
 				{wallet ? (
 					<Dropdown overlay={menu}>
-						<Button shape="round" type="primary">
+						<Button shape="round" type="primary" size='large'>
 							<Space>
 								{address}
 								<DownOutlined />
