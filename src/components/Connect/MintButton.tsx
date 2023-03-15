@@ -7,25 +7,33 @@ import { walletsListQuery } from "src/state/wallets-list";
 import { TonProofDemoApi } from "src/TonProofDemoApi";
 import { encodeOffChainContent } from "src/utils/NftCollection";
 import { Address, beginCell, toNano } from "ton-core";
+import TonWeb from "tonweb";
 
 const urlParams = new URLSearchParams(window.location.search);
+
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export default function MintButton({ approvalId, onMint }: { approvalId: string, onMint: Function }) {
   const [loading, setLoading] = useState(false)
   const wallet = useTonWallet();
 	const walletsList = useRecoilValueLoadable(walletsListQuery);
+  const walletAddress = Address.parse(wallet?.account.address as string);
 
-  const metadata = encodeOffChainContent(approvalId)
+  const metadata = encodeOffChainContent(approvalId, false)
 
-  console.log(beginCell().storeUint(1, 32).storeRef(metadata).endCell().toString())
+  const coinAmount = toNano('0.05')
+  const nftPayload = beginCell().storeAddress(walletAddress).storeRef(metadata).storeAddress(walletAddress).endCell();
+  const payload = beginCell().storeUint(1, 32).storeCoins(coinAmount).storeRef(nftPayload).endCell()
+
+  console.log(payload.toString())
 
   const mintTx: SendTransactionRequest = {
     validUntil: Date.now() + 1000000,
     messages: [
       {
         address: Address.parse(process.env.REACT_APP_TON_COLLECTION_ADDRESS as string).toRawString(),
-        amount: toNano('0.05').toString(),
-        payload: beginCell().storeUint(1, 32).storeRef(metadata).endCell().toString(),
+        amount: coinAmount.toString(),
+        payload: TonWeb.utils.bytesToBase64(payload.toBoc()),
       },
     ],
   };
@@ -44,6 +52,18 @@ export default function MintButton({ approvalId, onMint }: { approvalId: string,
 
         try {
           await sendTransaction(mintTx, walletsList.contents.walletsList[0])
+
+          for (let i = 0; i < 3; i++) {
+            try {
+              await wait(40000)
+              await TonProofDemoApi.submitSbt(approvalId)
+              break
+            } catch (err) {
+              if (i >= 2) throw err
+            }
+          }
+
+          onMint()
         } catch (err) {
           console.error(err)
           window.alert("Mint failed")

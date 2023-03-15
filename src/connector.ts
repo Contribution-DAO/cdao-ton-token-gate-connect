@@ -1,6 +1,7 @@
 import { SendTransactionRequest, TonConnect, UserRejectsError, WalletInfo, WalletInfoInjected } from '@tonconnect/sdk';
 import { notification } from 'antd';
 import { isMobile, openLink } from 'src/utils';
+import TonWeb from 'tonweb';
 
 const dappMetadata = { manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-backend/tonconnect-manifest.json' };
 
@@ -19,6 +20,10 @@ export async function sendTransaction(tx: SendTransactionRequest, wallet: Wallet
 			duration: 5,
 		});
 		console.log(`Send tx result: ${JSON.stringify(result)}`);
+
+		const resultCell = TonWeb.boc.Cell.fromBoc(TonWeb.utils.base64ToBytes(result.boc))
+		console.log(resultCell[0]?.print())
+
 		return result;
 	} catch (e) {
 		let message = 'Send transaction error';

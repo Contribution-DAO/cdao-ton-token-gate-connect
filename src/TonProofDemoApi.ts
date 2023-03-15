@@ -82,6 +82,28 @@ class TonProofDemoApiService {
 		}
 	}
 
+	async submitSbt(approvalId: string) {
+		try {
+			// console.log(this.accessToken)
+			if (!this.accessToken) {
+				window.location.href = "/connect?redirect_group_id=" + urlParams.get('group_id')
+				return null;
+			}
+	
+			const response = await axios.post(`${this.host}/sbt/scan/${approvalId}`, {}, {
+				headers: {
+					Authorization: `Bearer ${this.accessToken}`,
+				}
+			})
+	
+			return response.data;
+		} catch (err) {
+			console.error(err)
+			// localStorage.removeItem(this.localStorageKey)
+			return null;
+		}
+	}
+
 	async verifyTwitterFollow(groupId: string) {
 		try {
 			// console.log(this.accessToken)

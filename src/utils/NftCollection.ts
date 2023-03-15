@@ -46,10 +46,14 @@ export function makeSnakeCell(data: Buffer) {
     return rootCell
 }
 
-export function encodeOffChainContent(content: string) {
+export function encodeOffChainContent(content: string, hasPrefix = true) {
     let data = Buffer.from(content)
-    let offChainPrefix = Buffer.from([OFF_CHAIN_CONTENT_PREFIX])
-    data = Buffer.concat([offChainPrefix, data])
+
+    if (hasPrefix) {
+        let offChainPrefix = Buffer.from([OFF_CHAIN_CONTENT_PREFIX])
+        data = Buffer.concat([offChainPrefix, data])
+    }
+
     return makeSnakeCell(data)
 }
 

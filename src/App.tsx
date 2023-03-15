@@ -7,6 +7,7 @@ import { TxForm } from 'src/components/TxForm/TxForm';
 import { connector } from 'src/connector';
 import './app.scss';
 import ContinueButton from './components/Connect/ContinueButton';
+import JoinButton from './components/Connect/JoinButton';
 import MintButton from './components/Connect/MintButton';
 import TelegramLoggedInButton from './components/Connect/TelegramLoggedInButton';
 import TelegramLoginButton from './components/Connect/TelegramLoginButton';
@@ -97,6 +98,10 @@ function App() {
 				<div className="center-of-page">
 					<div style={{ fontSize: 24, marginBottom: 18 }}>Join {group.name}</div>
 
+					<div>
+						<img src={group.avatar || "/connect/img/telegram-whitebg.png"} style={{ borderRadius: "50%", width: 120, marginTop: 16, marginBottom: 24 }} />
+					</div>
+
 					<div style={{ fontSize: "1.1rem" }}>
 						Follow{' '}
 						<a
@@ -113,6 +118,13 @@ function App() {
 					<div style={{ marginTop: 16 }}>
 						{group.isMinted ? (
 							<div>
+								<div style={{ marginBottom: 12 }}>
+									<JoinButton invitationLink={group.invitationLink} />
+								</div>
+
+								<div>
+									<ContinueButton />
+								</div>
 							</div>
 						) : (
 							<div>
