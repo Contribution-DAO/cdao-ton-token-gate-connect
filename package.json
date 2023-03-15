@@ -87,7 +87,7 @@
   "homepage": "https://ton-connect.contributiondao.com/connect",
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js && move build connect",
+    "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
