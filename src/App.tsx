@@ -6,13 +6,18 @@ import { AuthButton } from 'src/components/AuthButton/AuthButton';
 import { TxForm } from 'src/components/TxForm/TxForm';
 import { connector } from 'src/connector';
 import './app.scss';
+import ContinueButton from './components/Connect/ContinueButton';
+import MintButton from './components/Connect/MintButton';
 import TelegramLoggedInButton from './components/Connect/TelegramLoggedInButton';
 import TelegramLoginButton from './components/Connect/TelegramLoginButton';
 import TwitterLoginButton from './components/Connect/TwitterLoginButton';
+import VerifyTwitterFollowButton from './components/Connect/VerifyTwitterFollowButton';
 import { TonProofDemo } from './components/TonProofDemo/TonProofDemo';
 import { useSlicedAddress } from './hooks/useSlicedAddress';
 import { useTonWallet } from './hooks/useTonWallet';
 import { TonProofDemoApi } from './TonProofDemoApi';
+
+const urlParams = new URLSearchParams(window.location.search);
 
 function App() {
 	const [loading, setLoading] = useState(true);
@@ -20,7 +25,11 @@ function App() {
 	const [hasTelegramAuth, setHasTelegramAuth] = useState<boolean>(false);
 
 	// Telegram Group
+	const [group, setGroup] = useState<any>(null);
 	const [groupLoading, setGroupLoading] = useState(true);
+	const [approval, setApproval] = useState<any>(null);
+
+	const groupId = urlParams.get('group_id');
 
 	useEffect(() => {
 		connector.restoreConnection();
@@ -40,6 +49,20 @@ function App() {
 				.finally(() => {
 					setLoading(false);
 				});
+
+			if (groupId) {
+				TonProofDemoApi.getTelegramGroup(groupId)
+					.then((group) => {
+						setGroup(group);
+					})
+					.catch((err) => {
+						console.error(err);
+						setGroup(null);
+					})
+					.finally(() => {
+						setGroupLoading(false);
+					});
+			}
 		}, 200);
 	}, [wallet]);
 
@@ -49,14 +72,14 @@ function App() {
 
 	useEffect(() => {
 		if (!wallet) {
-			setHasTelegramAuth(false)
+			setHasTelegramAuth(false);
 			return;
 		}
 
-		setHasTelegramAuth(Boolean(wallet?.telegramUserId))
-	}, [wallet])
+		setHasTelegramAuth(Boolean(wallet?.telegramUserId));
+	}, [wallet]);
 
-	if (loading) {
+	if (loading || (groupId && groupLoading)) {
 		return (
 			<div className="app">
 				<div className="center-of-page">
@@ -66,10 +89,63 @@ function App() {
 		);
 	}
 
+	if (groupId) {
+		console.log(group)
+
+		return (
+			<div className="app">
+				<div className="center-of-page">
+					<div style={{ fontSize: 24, marginBottom: 18 }}>Join {group.name}</div>
+
+					<div style={{ fontSize: "1.1rem" }}>
+						Follow{' '}
+						<a
+							href={'https://twitter.com/' + group.twitterUsername}
+							target="popup"
+							onClick={() =>
+								window.open('https://twitter.com/' + group.twitterUsername, 'popup', 'width=600,height=600')
+							}
+						>
+							@{group.twitterUsername}
+						</a>
+					</div>
+
+					<div style={{ marginTop: 16 }}>
+						{group.isMinted ? (
+							<div>
+							</div>
+						) : (
+							<div>
+								{approval ? (
+									<div>
+										<MintButton approvalId={approval.id} onMint={refreshData} />
+									</div>
+								) : (
+									<div>
+										<VerifyTwitterFollowButton groupId={groupId} onVerify={(approval: any) => {
+											setApproval(approval)
+											refreshData()
+										}} />
+									</div>
+								)}
+							</div>
+						)}
+					</div>
+
+					<div>
+
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="app">
 			<div className="center-of-page">
-				<div style={{ fontSize: 24, marginBottom: 18 }}>Connect your account</div>
+				<div style={{ fontSize: 24, marginBottom: 18 }}>
+					{groupId ? 'Join ' + (groupLoading ? '...' : group.name) : 'Connect your account'}
+				</div>
 
 				<div>
 					<div style={{ marginBottom: 16 }}>
@@ -100,18 +176,28 @@ function App() {
 												},
 											});
 
-											refreshData()
+											refreshData();
 										}}
 									/>
 								</div>
 							)}
 
 							<div style={{ marginBottom: 16 }}>
-								<TwitterLoginButton twitterUsername={wallet?.twitterUsername}></TwitterLoginButton>
+								<TwitterLoginButton twitterName={wallet?.twitterName}></TwitterLoginButton>
 							</div>
 						</>
 					)}
 				</div>
+
+				{wallet && wallet.walletAddress && wallet.telegramUserId && wallet.twitterUsername && (
+					<>
+						<hr style={{ width: 280 }} />
+
+						<div style={{ marginTop: 12 }}>
+							<ContinueButton />
+						</div>
+					</>
+				)}
 			</div>
 
 			<header>{/* <AppTitle /> */}</header>

@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 import { TonProofDemoApi } from "src/TonProofDemoApi"
 
-export default function TwitterLoginButton({ twitterUsername }: { twitterUsername: string }) {
-  const [isLogout, setIsLogout] = useState(!twitterUsername)
+export default function TwitterLoginButton({ twitterName }: { twitterName: string }) {
+  const [isLogout, setIsLogout] = useState(!twitterName)
 
   return (
     <div
@@ -21,7 +21,7 @@ export default function TwitterLoginButton({ twitterUsername }: { twitterUsernam
         }
       }}
     >
-      <img src={"/img/twitter.jpg"} width={24}></img> {isLogout ? "Log in with Twitter" : twitterUsername}
+      <img src={"/connect/img/twitter.jpg"} width={24}></img> {isLogout ? "Log in with Twitter" : twitterName}
     </div>
   )
 }

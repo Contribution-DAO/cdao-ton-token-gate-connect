@@ -4,6 +4,8 @@ import axios from 'axios';
 import { connector } from './connector';
 import './patch-local-storage-for-github-pages';
 
+const urlParams = new URLSearchParams(window.location.search);
+
 class TonProofDemoApiService {
 	localStorageKey = process.env.REACT_APP_LOCAL_STORAGE_KEY!;
 
@@ -39,7 +41,8 @@ class TonProofDemoApiService {
 
 	async getMyWallet() {
 		try {
-			if (this.accessToken == "") {
+			// console.log(this.accessToken)
+			if (!this.accessToken) {
 				return null;
 			}
 	
@@ -53,6 +56,50 @@ class TonProofDemoApiService {
 		} catch (err) {
 			console.error(err)
 			localStorage.removeItem(this.localStorageKey)
+			return null;
+		}
+	}
+
+	async getTelegramGroup(groupId: string) {
+		try {
+			// console.log(this.accessToken)
+			if (!this.accessToken) {
+				window.location.href = "/connect?redirect_group_id=" + urlParams.get('group_id')
+				return null;
+			}
+	
+			const response = await axios.get(`${this.host}/telegram/groups/${groupId}`, {
+				headers: {
+					Authorization: `Bearer ${this.accessToken}`,
+				}
+			})
+	
+			return response.data;
+		} catch (err) {
+			console.error(err)
+			// localStorage.removeItem(this.localStorageKey)
+			return null;
+		}
+	}
+
+	async verifyTwitterFollow(groupId: string) {
+		try {
+			// console.log(this.accessToken)
+			if (!this.accessToken) {
+				window.location.href = "/connect?redirect_group_id=" + urlParams.get('group_id')
+				return null;
+			}
+	
+			const response = await axios.get(`${this.host}/twitter/follow/${groupId}`, {
+				headers: {
+					Authorization: `Bearer ${this.accessToken}`,
+				}
+			})
+	
+			return response.data;
+		} catch (err) {
+			console.error(err)
+			// localStorage.removeItem(this.localStorageKey)
 			return null;
 		}
 	}

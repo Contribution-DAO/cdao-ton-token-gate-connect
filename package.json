@@ -70,7 +70,10 @@
     "webpack": "^5.64.4",
     "webpack-dev-server": "^4.6.0",
     "webpack-manifest-plugin": "^4.0.2",
-    "workbox-webpack-plugin": "^6.4.1"
+    "workbox-webpack-plugin": "^6.4.1",
+    "ton": "^13.3.0",
+    "ton-core": "^0.47.1",
+    "ton-crypto": "^3.2.0"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.4.0",

@@ -15,7 +15,7 @@ export default function TelegramLoggedInButton({ telegramUsername, onLogout }: {
         }
       }}
     >
-      <img src={"/img/telegram.png"} width={24}></img> {telegramUsername}
+      <img src={"/connect/img/telegram.png"} width={24}></img> {telegramUsername}
     </div>
   )
 }
