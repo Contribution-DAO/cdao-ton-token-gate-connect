@@ -10,7 +10,7 @@ export default function TelegramLoggedInButton({ telegramUsername, onLogout }: {
         backgroundColor: "#34A2ED",
       }}
       onClick={() => {
-        if (window.confirm('Are you sure you want to logout of your twitter?')) {
+        if (window.confirm('Are you sure you want to logout of your telegram?')) {
           onLogout()
         }
       }}
