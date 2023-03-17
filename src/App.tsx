@@ -176,7 +176,7 @@ function App() {
 							) : (
 								<div style={{ marginBottom: 12, textAlign: 'center' }}>
 									<TelegramLoginButton
-										botName="TonSBTGateBot"
+										botName="TonSBTGateCDAOBot"
 										dataOnauth={async (data) => {
 											console.log('Telegram Data', data);
 
